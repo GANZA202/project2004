@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typing and Rubbing Text</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background-color: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 2em;
+            overflow: hidden;
+        }
+
+        .text {
+            display: inline-block;
+            opacity: 1;
+            transition: opacity 0.5s;
+        }
+    </style>
+</head>
+<body>
+    <div class="text"> NGENDO Design presents!</div>
+
+    <script>
+        const textElement = document.querySelector('.text');
+        const text = textElement.textContent;
+        let index = text.length;
+
+        function rubText() {
+            if (index >= 0) {
+                textElement.textContent = text.substring(0, index);
+                index--;
+                setTimeout(rubText, 110); // Rub letter by letter every 0.14 seconds
+            } else {
+                setTimeout(() => {
+                    index = 0; // Reset index to start reappearing
+                    showText(); // Start showing text again
+                }, 1000); // Wait before starting to show text again
+            }
+        }
+
+        function showText() {
+            if (index < text.length) {
+                textElement.textContent = text.substring(0, index + 1);
+                index++;
+                setTimeout(showText, 140); // Show letter by letter every 0.14 seconds
+            } else {
+                setTimeout(rubText, 1000); // Wait before starting to rub again
+            }
+        }
+
+        rubText(); // Start the rubbing effect on load
+    </script>
+</body>
+</html>

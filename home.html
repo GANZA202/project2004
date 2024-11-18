@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Foods Table</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h2 {
+            text-align: center;
+        }
+        .search-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        #search {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 300px;
+            transition: border-color 0.3s;
+        }
+        #search:focus {
+            border-color: #ec0606;;
+            outline: none;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+            font-family: cursive;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        @media (max-width: 600px) {
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+            th {
+                display: none;
+            }
+            tr {
+                margin-bottom: 15px;
+            }
+            td {
+                text-align: right;
+                padding-left: 50%;
+                position: relative;
+            }
+            td::before {
+                content: attr(data-label);
+                position: absolute;
+                left: 10px;
+                width: 45%;
+                padding-left: 10px;
+                text-align: left;
+                font-weight: bold;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<h2 style="font-family: cursive;">LIST OF ALL THINGS IN THE CANTINE STOCK</h2>
+<div class="search-container">
+    <input type="text" id="search" placeholder="Search for foods..." onkeydown="filterTable()">
+</div>
+
+<table id="foodsTable">
+    <thead>
+        <tr>
+            <th>Food</th>
+            <th>Date</th>
+            <th>Quantity</th>
+            <th>Money (RWF)</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td data-label="Food">Novida</td>
+            <td data-label="Date">2024-10-15</td>
+            <td data-label="Quantity">6</td>
+            <td data-label="Money">3000</td>
+        </tr>
+        <tr>
+            <td data-label="Food">Banana</td>
+            <td data-label="Date">2024-10-15</td>
+            <td data-label="Quantity">10</td>
+            <td data-label="Money">2500</td>
+        </tr>
+        <tr>
+            <td data-label="Food">Orange</td>
+            <td data-label="Date">2024-10-15</td>
+            <td data-label="Quantity">8</td>
+            <td data-label="Money">4000</td>
+        </tr>
+        <tr>
+            <td data-label="Food">Ibiraha</td>
+            <td data-label="Date">2024-10-15</td>
+            <td data-label="Quantity">15</td>
+            <td data-label="Money">5000</td>
+        </tr>
+        <tr>
+            <td data-label="Food">Imishito</td>
+            <td data-label="Date">2024-10-15</td>
+            <td data-label="Quantity">12</td>
+            <td data-label="Money">6000</td>
+        </tr>
+        <tr>
+            <td data-label="Food">Amandazi</td>
+            <td data-label="Date">2024-10-15</td>
+            <td data-label="Quantity">4</td>
+            <td data-label="Money">4500</td>
+        </tr>
+        <tr>
+            <td data-label="Food">Chapati</td>
+            <td data-label="Date">2024-10-15</td>
+            <td data-label="Quantity">6</td>
+            <td data-label="Money">5500</td>
+        </tr>
+        <tr>
+            <td data-label="Food">Blueberry</td>
+            <td data-label="Date">2024-10-15</td>
+            <td data-label="Quantity">7</td>
+            <td data-label="Money">3500</td>
+        </tr>
+        <tr>
+            <td data-label="Food">Watermelon</td>
+            <td data-label="Date">2024-10-15</td>
+            <td data-label="Quantity">3</td>
+            <td data-label="Money">6000</td>
+        </tr>
+        <tr>
+            <td data-label="Food">Mukamira</td>
+            <td data-label="Date">2024-10-15</td>
+            <td data-label="Quantity">9</td>
+            <td data-label="Money">4000</td>
+        </tr>
+        <tr>
+            <td data-label="Food">Inyange</td>
+            <td data-label="Date">2024-10-15</td>
+            <td data-label="Quantity">9</td>
+            <td data-label="Money">4000</td>
+        </tr>
+    </tbody>
+</table>
+
+<p><strong>Total Number of Foods: </strong> <span id="totalFoods">81</span></p>
+<p><strong>Total Money: </strong> <span id="totalMoney">RWF 42,500</span></p>
+
+<h2 style="font-family: cursive;">Remaining Products in Stock</h2>
+<table id="remainingTable">
+    <thead>
+        <tr>
+            <th>Food</th>
+            <th>Quantity</th>
+            <th>Date</th>
+            <th>Money (RWF)</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td data-label="Food">Chapati</td>
+            <td data-label="Quantity">10</td>
+            <td data-label="Money">1000</td>
+            
+        </tr>
+    </tbody>
+</table>
+
+<script>
+    function filterTable() {
+        const input = document.getElementById('search');
+        const filter = input.value.toLowerCase();
+        const table = document.getElementById('foodsTable');
+        const tr = table.getElementsByTagName('tr');
+
+        let totalFoods = 0;
+        let totalMoney = 0;
+        let foundMatch = false;
+
+        for (let i = 1; i < tr.length; i++) {
+            const tdFood = tr[i].getElementsByTagName('td')[0];
+            const tdQuantity = tr[i].getElementsByTagName('td')[2];
+            const tdMoney = tr[i].getElementsByTagName('td')[3];
+
+            if (tdFood) {
+                const txtValue = tdFood.textContent || tdFood.innerText;
+                if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                    tr[i].style.display = '';
+                    foundMatch = true;
+
+                    // If row is displayed, add to totals
+                    totalFoods += parseInt(tdQuantity.textContent);
+                    totalMoney += parseInt(tdMoney.textContent);
+                } else {
+                    tr[i].style.display = 'none';
+                }
+            }
+        }
+
+        // Update totals
+        document.getElementById('totalFoods').textContent = totalFoods;
+        document.getElementById('totalMoney').textContent = `RWF ${totalMoney.toLocaleString()}`;
+
+        // Show alert if no matches found
+        if (!foundMatch && filter !== '') {
+            alert('Your search does not match any foods.');
+        }
+    }
+
+    // Initial calculation for totals
+    window.onload = function() {
+        filterTable();
+    }
+</script>
+
+</body>
+</html>
